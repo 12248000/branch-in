@@ -175,7 +175,7 @@ timestep 25
 
 #5+1 -> 6-8 
 #fix bondc0  reactgrp bond/create/random 10 10 1 5.5 1 prob 0.00001 $a iparam 1 11 jparam 1 8
-fix bondc0 reactgrp bond/create 10 11 1 5.5 1 iparam 1 11 jparam 1 8
+#fix bondc0 reactgrp bond/create 10 11 1 5.5 1 iparam 1 11 jparam 1 8
 #6-8 + 2 --> 3-5-9 (8->9, 2->3, 6->5 aka patch 11->10)
 molecule preTriad preTriad.txt
 molecule postTriad postTriad.txt
@@ -187,7 +187,7 @@ fix bondc1 reactgrp bond/react &
     react comp1_rxn reactgrp 10 0.0 5.5 preComp1 postComp1 comp1.map &
     react triad_rxn reactgrp 10 0.0 5.5 preTriad postTriad triad.map  # turns 2+6-8 -> 3+5+9
 # tell bond/react how long to keep highlight spheres (in timesteps)
-fix bondb0 reactgrp bond/break 10 1 5.5
+#fix bondb0 reactgrp bond/break 10 1 5.5
 
 #fix_modify bondc1 fcolor yellow ftrans 0.5
 
@@ -199,7 +199,7 @@ dump bondinfo reactgrp local 100 bond_data.txt c_flux[1] c_flux[2] c_flux[3]
 
 #dump file for product yield
 variable tstep equal step
-thermo_style custom step ebond etotal temp f_bondc0[2] f_bondc1[2] 
+thermo_style custom step ebond etotal temp f_bondc1[2] 
 timestep 25
 
 restart 100000 sim1.1.restart sim1.2.restart #change parameter 
