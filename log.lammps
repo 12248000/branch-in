@@ -19,8 +19,8 @@ Finding 1-2 1-3 1-4 neighbors ...
      0 = max # of 1-3 neighbors
      0 = max # of 1-4 neighbors
     11 = max # of special neighbors
-  special bonds CPU = 0.003 seconds
-  read_data CPU = 0.024 seconds
+  special bonds CPU = 0.001 seconds
+  read_data CPU = 0.010 seconds
 #read_restart sim.2.restart
 
 pair_style hybrid/overlay lj/cut 30.0 morse 10.0
@@ -215,21 +215,21 @@ Per MPI rank memory allocation (min/avg/max) = 11.75 | 11.75 | 11.75 Mbytes
          0   0              116.98524      0              116.98524      0.0052968352 
      10000   310.53126      112.86395      0              1839.7898      14.034828    
      20000   315.45117      111.73145      0              1866.0178     -4.8251209    
-Loop time of 2.26733 on 4 procs for 20000 steps with 1900 atoms
+Loop time of 1.70331 on 4 procs for 20000 steps with 1900 atoms
 
-Performance: 19053.258 ns/day, 0.001 hours/ns, 8820.953 timesteps/s, 16.760 Matom-step/s
-99.3% CPU use with 4 MPI tasks x no OpenMP threads
+Performance: 25362.341 ns/day, 0.001 hours/ns, 11741.825 timesteps/s, 22.309 Matom-step/s
+98.9% CPU use with 4 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.081917   | 0.086213   | 0.090331   |   1.2 |  3.80
-Bond    | 0.0012485  | 0.0012658  | 0.0012756  |   0.0 |  0.06
-Neigh   | 0.098494   | 0.098786   | 0.099066   |   0.1 |  4.36
-Comm    | 0.24571    | 0.25049    | 0.25395    |   0.6 | 11.05
-Output  | 0.0024792  | 0.003087   | 0.004433   |   1.4 |  0.14
-Modify  | 1.7228     | 1.7281     | 1.7327     |   0.3 | 76.22
-Other   |            | 0.09941    |            |       |  4.38
+Pair    | 0.059332   | 0.06351    | 0.066837   |   1.2 |  3.73
+Bond    | 0.00093331 | 0.0009446  | 0.00096635 |   0.0 |  0.06
+Neigh   | 0.072547   | 0.074414   | 0.075255   |   0.4 |  4.37
+Comm    | 0.19434    | 0.19543    | 0.19636    |   0.2 | 11.47
+Output  | 0.0019108  | 0.0023709  | 0.0034138  |   1.2 |  0.14
+Modify  | 1.2731     | 1.2778     | 1.2833     |   0.4 | 75.02
+Other   |            | 0.08889    |            |       |  5.22
 
 Nlocal:            475 ave         493 max         459 min
 Histogram: 1 0 1 0 0 0 1 0 0 1
@@ -319,6 +319,7 @@ postComp1
 fix bondc1 reactgrp bond/react     react comp1_rxn reactgrp 10 0.0 5.5 preComp1 postComp1 comp1.map     react triad_rxn reactgrp 10 0.0 5.5 preTriad postTriad triad.map  # turns 2+6-8 -> 3+5+9
 dynamic group bond_react_MASTER_group defined
 # tell bond/react how long to keep highlight spheres (in timesteps)
+fix bondb0 reactgrp bond/break 10 1 5.5
 
 #fix_modify bondc1 fcolor yellow ftrans 0.5
 
@@ -392,6 +393,7 @@ Your simulation uses code contributions which should be cited:
 CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
 
 Generated 0 of 55 mixed pair_coeff terms from geometric mixing rule
+WARNING: Using fix bond/create multiple times or with fix bond/break may not work as expected (src/MC/fix_bond_create.cpp:262)
 Neighbor list info ...
   update: every = 1 steps, delay = 0 steps, check = yes
   max neighbors/atom: 2000, page size: 100000
@@ -424,25 +426,25 @@ Neighbor list info ...
       pair build: half/bin/newton
       stencil: half/bin/3d
       bin: standard
-Per MPI rank memory allocation (min/avg/max) = 12.38 | 12.38 | 12.39 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 12.63 | 12.63 | 12.64 Mbytes
    Step         E_bond         TotEng          Temp       f_bondc0[2]    f_bondc1[2]  
      20000   0              1866.0178      315.45117      0              0            
      22000   0              1896.907       321.23175      0              0            
-Loop time of 4.75766 on 4 procs for 2000 steps with 1900 atoms
+Loop time of 4.00883 on 4 procs for 2000 steps with 1900 atoms
 
-Performance: 908.009 ns/day, 0.026 hours/ns, 420.375 timesteps/s, 798.712 katom-step/s
-91.2% CPU use with 4 MPI tasks x no OpenMP threads
+Performance: 1077.622 ns/day, 0.022 hours/ns, 498.899 timesteps/s, 947.908 katom-step/s
+88.5% CPU use with 4 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.011781   | 0.013606   | 0.014763   |   0.9 |  0.29
-Bond    | 0.00022664 | 0.00023933 | 0.00025015 |   0.0 |  0.01
-Neigh   | 0.013584   | 0.01364    | 0.01373    |   0.0 |  0.29
-Comm    | 0.070679   | 0.082996   | 0.090052   |   2.6 |  1.74
-Output  | 0.70592    | 1.6663     | 4.1454     | 111.5 | 35.02
-Modify  | 0.4206     | 2.9087     | 3.8741     |  84.7 | 61.14
-Other   |            | 0.07217    |            |       |  1.52
+Pair    | 0.010868   | 0.0114     | 0.012079   |   0.4 |  0.28
+Bond    | 0.0002016  | 0.00026595 | 0.00040422 |   0.0 |  0.01
+Neigh   | 0.014065   | 0.014605   | 0.015083   |   0.3 |  0.36
+Comm    | 0.079425   | 0.080203   | 0.080682   |   0.2 |  2.00
+Output  | 0.63502    | 1.4357     | 3.4907     |  99.7 | 35.81
+Modify  | 0.36666    | 2.4151     | 3.2253     |  76.6 | 60.25
+Other   |            | 0.0515     |            |       |  1.28
 
 Nlocal:            475 ave         494 max         458 min
 Histogram: 1 0 1 0 0 0 1 0 0 1
@@ -462,27 +464,28 @@ undump viz
 #fix rukja all halt 10000 v_netbond >= 700
 run   20000 #change parameter
 Generated 0 of 55 mixed pair_coeff terms from geometric mixing rule
-Per MPI rank memory allocation (min/avg/max) = 15.01 | 15.01 | 15.01 Mbytes
+WARNING: Using fix bond/create multiple times or with fix bond/break may not work as expected (src/MC/fix_bond_create.cpp:262)
+Per MPI rank memory allocation (min/avg/max) = 15.26 | 15.26 | 15.26 Mbytes
    Step         E_bond         TotEng          Temp       f_bondc0[2]    f_bondc1[2]  
      22000   0              1896.907       321.23175      0              0            
      30000   0              1865.1642      315.49616      0              0            
      40000   0              1884.5584      319.99935      0              0            
      42000   0              1797.8282      303.68419      0              0            
-Loop time of 2.99203 on 4 procs for 20000 steps with 1900 atoms
+Loop time of 3.20548 on 4 procs for 20000 steps with 1900 atoms
 
-Performance: 14438.356 ns/day, 0.002 hours/ns, 6684.424 timesteps/s, 12.700 Matom-step/s
-99.5% CPU use with 4 MPI tasks x no OpenMP threads
+Performance: 13476.909 ns/day, 0.002 hours/ns, 6239.310 timesteps/s, 11.855 Matom-step/s
+97.8% CPU use with 4 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.082688   | 0.087991   | 0.093119   |   1.3 |  2.94
-Bond    | 0.0012336  | 0.0012496  | 0.0012664  |   0.0 |  0.04
-Neigh   | 0.099156   | 0.099606   | 0.10021    |   0.1 |  3.33
-Comm    | 0.23454    | 0.2404     | 0.24493    |   0.8 |  8.03
-Output  | 0.0034904  | 0.0049926  | 0.008906   |   3.2 |  0.17
-Modify  | 2.4905     | 2.4938     | 2.4951     |   0.1 | 83.35
-Other   |            | 0.06402    |            |       |  2.14
+Pair    | 0.082508   | 0.088718   | 0.093954   |   1.4 |  2.77
+Bond    | 0.0012786  | 0.0013028  | 0.001343   |   0.1 |  0.04
+Neigh   | 0.1007     | 0.1037     | 0.10527    |   0.6 |  3.24
+Comm    | 0.26303    | 0.26425    | 0.26689    |   0.3 |  8.24
+Output  | 0.0037845  | 0.0054532  | 0.0098296  |   3.4 |  0.17
+Modify  | 2.6665     | 2.6696     | 2.6716     |   0.1 | 83.28
+Other   |            | 0.07243    |            |       |  2.26
 
 Nlocal:            475 ave         494 max         462 min
 Histogram: 1 1 0 0 0 1 0 0 0 1
@@ -507,4 +510,4 @@ unfix fxnve
 clear
 
 
-Total wall time: 0:00:10
+Total wall time: 0:00:08

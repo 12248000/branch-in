@@ -187,6 +187,7 @@ fix bondc1 reactgrp bond/react &
     react comp1_rxn reactgrp 10 0.0 5.5 preComp1 postComp1 comp1.map &
     react triad_rxn reactgrp 10 0.0 5.5 preTriad postTriad triad.map  # turns 2+6-8 -> 3+5+9
 # tell bond/react how long to keep highlight spheres (in timesteps)
+fix bondb0 reactgrp bond/break 10 1 5.5
 
 #fix_modify bondc1 fcolor yellow ftrans 0.5
 
