@@ -1,0 +1,17 @@
+postComp1
+
+2 atoms
+0 bonds
+0 angles
+0 dihedrals
+0 impropers
+
+Coords
+
+1  0.0  0.0  0.0    
+2  1.0  0.0  0.0
+
+Types 
+
+1 10 
+2 1 

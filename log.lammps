@@ -1,0 +1,510 @@
+LAMMPS (22 Jul 2025 - Update 3)
+#######################Init Section######################
+units           real
+boundary p p p
+atom_style      full
+bond_style      harmonic
+#angle_style     hybrid harmonic cosine
+#read_data new_system.data extra/special/per/atom 10
+read_data new_system.data extra/bond/per/atom 20 extra/special/per/atom 10
+Reading data file ...
+  orthogonal box = (0 0 0) to (800 800 800)
+  1 by 2 by 2 MPI processor grid
+  reading atoms ...
+  1900 atoms
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     0 = max # of 1-2 neighbors
+     0 = max # of 1-3 neighbors
+     0 = max # of 1-4 neighbors
+    11 = max # of special neighbors
+  special bonds CPU = 0.003 seconds
+  read_data CPU = 0.024 seconds
+#read_restart sim.2.restart
+
+pair_style hybrid/overlay lj/cut 30.0 morse 10.0
+
+#HS 5,6, patch 10,11, ligand 1,2,8,9, crowder 3,4, 7 (originally CoQ9 but treating as crowder)
+#HS size 10 #radius
+#side size 3.5
+#ligand size 1
+
+#HS-side patch - the patch is like an active site
+#for now just copying parameters from other lammps CoQ code
+pair_coeff 5 10 lj/cut 0.01 13.5 13.5
+pair_coeff 6 10 lj/cut 0.01 13.5 13.5
+pair_coeff 5 11 lj/cut 0.01 13.5 13.5
+pair_coeff 6 11 lj/cut 0.01 13.5 13.5
+
+#Crowder-Side Patch
+pair_coeff 5 3 lj/cut 0.01 13.5 13.5
+pair_coeff 5 4 lj/cut 0.01 13.5 13.5
+pair_coeff 6 3 lj/cut 0.01 13.5 13.5
+pair_coeff 6 4 lj/cut 0.01 13.5 13.5
+
+# Crowder–patch interactions (same style as HS–patch)
+pair_coeff 3 10 lj/cut 0.01 13.5 13.5
+pair_coeff 3 11 lj/cut 0.01 13.5 13.5
+pair_coeff 4 10 lj/cut 0.01 13.5 13.5
+pair_coeff 4 11 lj/cut 0.01 13.5 13.5
+
+#HS-crowder
+pair_coeff 5 3 lj/cut 0.01 20 20
+pair_coeff 5 4 lj/cut 0.01 20 20
+pair_coeff 6 3 lj/cut 0.01 20 20
+pair_coeff 6 4 lj/cut 0.01 20 20
+
+#Crowder-crowder
+pair_coeff 3 3 lj/cut 0.01 20 20
+pair_coeff 3 4 lj/cut 0.01 20 20
+pair_coeff 4 4 lj/cut 0.01 20 20
+
+#Crowder-ligand
+pair_coeff 1 3 lj/cut 0.2 11 25
+pair_coeff 1 4 lj/cut 0.2 11 25
+pair_coeff 2 3 lj/cut 0.2 11 25
+pair_coeff 2 4 lj/cut 0.2 11 25
+pair_coeff 8 3 lj/cut 0.2 11 25
+pair_coeff 8 4 lj/cut 0.2 11 25
+pair_coeff 9 3 lj/cut 0.2 11 25
+pair_coeff 9 4 lj/cut 0.2 11 25
+
+#Ligand-ligand
+pair_coeff 1 1 lj/cut 0.01 2 2
+pair_coeff 2 2 lj/cut 0.01 2 2
+pair_coeff 8 8 lj/cut 0.01 2 2
+pair_coeff 9 9 lj/cut 0.01 2 2
+pair_coeff 1 2 lj/cut 0.01 2 2
+pair_coeff 1 8 lj/cut 0.01 2 2
+pair_coeff 1 9 lj/cut 0.01 2 2
+pair_coeff 2 8 lj/cut 0.01 2 2
+pair_coeff 2 9 lj/cut 0.01 2 2
+pair_coeff 8 9 lj/cut 0.01 2 2
+
+#HS-HS unsure if this is relevant yet as I only have 1 enzyme that flickers
+#between on and off states, but I will include it for now
+pair_coeff 5 6 lj/cut 1.35 20 50
+#put in some dummy parameters as done before
+
+#HS-HS and unmeasured set at 1KT
+pair_coeff 5 5 lj/cut 0.6 20 50
+pair_coeff 6 6 lj/cut 0.6 20 50
+
+#patch-ligand cognate use 4KT
+pair_coeff 10 1 morse 2.5 1.5 5.5 8.3
+pair_coeff 11 2 morse 2.5 1.5 5.5 8.3
+
+#patch-ligand non-cognate use 2KT 0kT for final product and all patches
+pair_coeff 10 2 lj/cut 1.2 4.5 11.5
+pair_coeff 10 8 lj/cut 1.2 4.5 11.5
+pair_coeff 10 9 lj/cut 0.01 4.5 4.5
+pair_coeff 11 1 lj/cut 1.2 4.5 11.5
+pair_coeff 11 8 lj/cut 1.2 4.5 11.5
+pair_coeff 11 9 lj/cut 0.01 4.5 4.5
+
+#Patch-patch
+pair_coeff 10 10 lj/cut 0.01 7 7
+pair_coeff 11 11 lj/cut 0.01 7 7
+pair_coeff 10 11 lj/cut 0.01 7 7
+
+#HS-Ligand 0kT for final product and all enzymes
+pair_coeff 5 9 lj/cut 0.01 11 11
+pair_coeff 6 9 lj/cut 0.01 11 11
+pair_coeff 5 1 lj/cut 1.2 11 27.5
+pair_coeff 5 2 lj/cut 1.2 11 27.5
+pair_coeff 5 8 lj/cut 1.2 11 27.5
+pair_coeff 6 1 lj/cut 1.2 11 27.5
+pair_coeff 6 2 lj/cut 1.2 11 27.5
+pair_coeff 6 8 lj/cut 1.2 11 27.5
+
+#ignoring PPI as we're going between bound and unbound enzyme, and really just 1 enzyme to care about
+#CoQ-HS (starting from here) - skipping this section because i don't think i need it?
+# COQ9 (type 7) treated like a crowder
+
+# COQ9–COQ9 and COQ9–crowder
+pair_coeff 7 7 lj/cut 0.01 20 20
+pair_coeff 3 7 lj/cut 0.01 20 20
+pair_coeff 4 7 lj/cut 0.01 20 20
+
+# HS–COQ9 (copy HS–crowder)
+pair_coeff 5 7 lj/cut 0.01 20 20
+pair_coeff 6 7 lj/cut 0.01 20 20
+
+# Ligand–COQ9 (copy crowder–ligand)
+pair_coeff 1 7 lj/cut 0.2 11 25
+pair_coeff 2 7 lj/cut 0.2 11 25
+pair_coeff 8 7 lj/cut 0.2 11 25
+pair_coeff 9 7 lj/cut 0.2 11 25
+
+# Patch–COQ9 (copy patch–crowder)
+pair_coeff 7 10 lj/cut 0.01 13.5 13.5
+pair_coeff 7 11 lj/cut 0.01 13.5 13.5
+
+#patch-ligand k_off
+bond_coeff * 0.6 5.3
+special_bonds lj 0 0.2 0.5 angle no
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0.2      0.5     
+  special bond factors coul:  0        0        0       
+     0 = max # of 1-2 neighbors
+     0 = max # of 1-3 neighbors
+     0 = max # of 1-4 neighbors
+    11 = max # of special neighbors
+  special bonds CPU = 0.000 seconds
+compute 1 all temp
+thermo          10000
+#Output thermodynamic information every 10,000 steps.
+
+group enz type 5 6 10 11 #apparently should include patch in enz group
+200 atoms in group enz
+group crwd type 3 4
+700 atoms in group crwd
+group reactgrp type 10 11 1 2 8 9
+1100 atoms in group reactgrp
+group lig type 1 2 8 9
+1000 atoms in group lig
+group crwdlig type 1 2 8 9 3 4
+1700 atoms in group crwdlig
+
+#random seed
+variable a equal 233
+
+# rigid body constraint
+fix fxrig enz rigid/nve molecule langevin 310 310 2000 $a
+fix fxrig enz rigid/nve molecule langevin 310 310 2000 233
+  100 rigid bodies with 200 atoms
+fix fxlan crwd langevin 310.0 310.0 2000 $a
+fix fxlan crwd langevin 310.0 310.0 2000 233
+fix fxlan1 lig langevin 310.0 310.0 80 $a
+fix fxlan1 lig langevin 310.0 310.0 80 233
+fix fxnve crwdlig nve
+timestep 25
+
+dump equi all dcd 500 preequi.$a.dcd
+dump equi all dcd 500 preequi.233.dcd
+dump_modify equi unwrap yes
+
+#short equilibrium run
+run   20000 #we'll see if this is too short, can try 1000 and 100,000
+Generated 0 of 55 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 52
+  ghost atom cutoff = 52
+  binsize = 26, bins = 31 31 31
+  3 neighbor lists, perpetual/occasional/extra = 3 0 0
+  (1) pair lj/cut, perpetual, skip from (3)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (2) pair morse, perpetual, skip from (3)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (3) neighbor class addition, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 11.75 | 11.75 | 11.75 Mbytes
+   Step          Temp          E_pair         E_mol          TotEng         Press     
+         0   0              116.98524      0              116.98524      0.0052968352 
+     10000   310.53126      112.86395      0              1839.7898      14.034828    
+     20000   315.45117      111.73145      0              1866.0178     -4.8251209    
+Loop time of 2.26733 on 4 procs for 20000 steps with 1900 atoms
+
+Performance: 19053.258 ns/day, 0.001 hours/ns, 8820.953 timesteps/s, 16.760 Matom-step/s
+99.3% CPU use with 4 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.081917   | 0.086213   | 0.090331   |   1.2 |  3.80
+Bond    | 0.0012485  | 0.0012658  | 0.0012756  |   0.0 |  0.06
+Neigh   | 0.098494   | 0.098786   | 0.099066   |   0.1 |  4.36
+Comm    | 0.24571    | 0.25049    | 0.25395    |   0.6 | 11.05
+Output  | 0.0024792  | 0.003087   | 0.004433   |   1.4 |  0.14
+Modify  | 1.7228     | 1.7281     | 1.7327     |   0.3 | 76.22
+Other   |            | 0.09941    |            |       |  4.38
+
+Nlocal:            475 ave         493 max         459 min
+Histogram: 1 0 1 0 0 0 1 0 0 1
+Nghost:          371.5 ave         418 max         353 min
+Histogram: 3 0 0 0 0 0 0 0 0 1
+Neighs:              0 ave           0 max           0 min
+Histogram: 4 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 0
+Ave neighs/atom = 0
+Ave special neighs/atom = 0
+Neighbor list builds = 613
+Dangerous builds = 0
+
+undump equi
+unfix fxrig
+unfix fxlan
+unfix fxlan1
+unfix fxnve
+
+############################Langevin Dynamics###############################
+
+fix fxrig enz rigid/nve molecule langevin 310 310 2000 $a
+fix fxrig enz rigid/nve molecule langevin 310 310 2000 233
+  100 rigid bodies with 200 atoms
+fix fxlan crwd langevin 310.0 310.0 2000 $a
+fix fxlan crwd langevin 310.0 310.0 2000 233
+fix fxlan1 lig langevin 310.0 310.0 80 $a
+fix fxlan1 lig langevin 310.0 310.0 80 233
+fix fxnve crwdlig nve
+timestep 25
+
+#bond/create/random written by Pierre de Buyl https://github.com/pdebuyl/lammps/tree/fbc_random/src/MC
+#fix ID group bond/create/random Nevery itype jtype rcut new_bond_type \prob P seed iparam 1 iatomtype jparam 1 jatomtype
+#it is non-trivial to do Pierre de Buyl because his is old and lammps you need for react is new
+
+#5+1 -> 6-8
+#fix bondc0  reactgrp bond/create/random 10 10 1 5.5 1 prob 0.00001 $a iparam 1 11 jparam 1 8
+fix bondc0 reactgrp bond/create 10 11 1 5.5 1 iparam 1 11 jparam 1 8
+#6-8 + 2 --> 3-5-9 (8->9, 2->3, 6->5 aka patch 11->10)
+molecule preTriad preTriad.txt
+Read molecule template preTriad:
+preTriad
+  1 molecules
+  0 fragments
+  0 bodies
+  3 atoms with max type 8
+  1 bonds with max type 1
+  0 angles with max type 0
+  0 dihedrals with max type 0
+  0 impropers with max type 0
+molecule postTriad postTriad.txt
+Read molecule template postTriad:
+postTriad
+  1 molecules
+  0 fragments
+  0 bodies
+  3 atoms with max type 9
+  0 bonds with max type 0
+  0 angles with max type 0
+  0 dihedrals with max type 0
+  0 impropers with max type 0
+#the reversible enzyme-substrate complex
+molecule preComp1 preComp1.txt
+Read molecule template preComp1:
+preComp1
+  1 molecules
+  0 fragments
+  0 bodies
+  2 atoms with max type 11
+  1 bonds with max type 1
+  0 angles with max type 0
+  0 dihedrals with max type 0
+  0 impropers with max type 0
+molecule postComp1 postComp1.txt
+Read molecule template postComp1:
+postComp1
+  1 molecules
+  0 fragments
+  0 bodies
+  2 atoms with max type 10
+  0 bonds with max type 0
+  0 angles with max type 0
+  0 dihedrals with max type 0
+  0 impropers with max type 0
+#code that disassociates first enzyme-substrate complex (folP-DHPP 6-8 -> 5+1)
+fix bondc1 reactgrp bond/react     react comp1_rxn reactgrp 10 0.0 5.5 preComp1 postComp1 comp1.map     react triad_rxn reactgrp 10 0.0 5.5 preTriad postTriad triad.map  # turns 2+6-8 -> 3+5+9
+dynamic group bond_react_MASTER_group defined
+# tell bond/react how long to keep highlight spheres (in timesteps)
+
+#fix_modify bondc1 fcolor yellow ftrans 0.5
+
+#dump file for channeling analysis
+compute flux reactgrp property/local btype batom1 batom2
+dump bondinfo reactgrp local 100 bond_data.txt c_flux[1] c_flux[2] c_flux[3]
+
+# unsure if adding break code here
+
+#dump file for product yield
+variable tstep equal step
+thermo_style custom step ebond etotal temp f_bondc0[2] f_bondc1[2]
+timestep 25
+
+restart 100000 sim1.1.restart sim1.2.restart #change parameter
+
+#dump file for trajectory
+dump dyn all dcd 20000 equi1.$a.dcd
+dump dyn all dcd 20000 equi1.233.dcd
+dump_modify dyn unwrap yes
+
+#another dump file for channeling analysis
+dump dyn2 all custom 20000 atomtype.$a.dump id type x y z
+dump dyn2 all custom 20000 atomtype.233.dump id type x y z
+
+# ---------- short visualization test run ----------
+
+variable ndump index 10
+
+# minimal, known‑good syntax: no extra keywords
+dump viz all image ${ndump} movie.*.png type type size 600 600      center s 0.5 0.5 0.5 view 70 -10 zoom 4.0
+dump viz all image 10 movie.*.png type type size 600 600      center s 0.5 0.5 0.5 view 70 -10 zoom 4.0
+dump_modify viz backcolor white pad 4
+
+run 2000
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+
+- fix bond/react: reacter.org doi:10.1016/j.polymer.2017.09.038, doi:10.1021/acs.macromol.0c02012, doi:10.1016/j.cpc.2024.109287
+
+@Article{Gissinger17,
+ author = {J. R. Gissinger and B. D. Jensen and K. E. Wise},
+ title = {Modeling Chemical Reactions in Classical Molecular Dynamics Simulations},
+ journal = {Polymer},
+ year =    2017,
+ volume =  128,
+ pages =   {211--217}
+}
+
+@Article{Gissinger20,
+ author = {J. R. Gissinger, B. D. Jensen, K. E. Wise},
+ title = {{REACTER}: A Heuristic Method for Reactive Molecular Dynamics},
+ journal = {Macromolecules},
+ year =    2020,
+ volume =  53,
+ number =  22,
+ pages =   {9953--9961}
+}
+
+@Article{Gissinger24,
+ author = {J. R. Gissinger, B. D. Jensen, K. E. Wise},
+ title = {Molecular Modeling of Reactive Systems with REACTER},
+ journal = {Computer Physics Communications},
+ year =    2024,
+ volume =  304,
+ number =  109287
+}
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Generated 0 of 55 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 52
+  ghost atom cutoff = 52
+  binsize = 26, bins = 31 31 31
+  5 neighbor lists, perpetual/occasional/extra = 3 2 0
+  (1) pair lj/cut, perpetual, skip from (5)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (2) pair morse, perpetual, skip from (5)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (3) fix bond/create, occasional, copy from (5)
+      attributes: half, newton on
+      pair build: copy
+      stencil: none
+      bin: none
+  (4) fix bond/react, occasional, copy from (5)
+      attributes: half, newton on
+      pair build: copy
+      stencil: none
+      bin: none
+  (5) neighbor class addition, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 12.38 | 12.38 | 12.39 Mbytes
+   Step         E_bond         TotEng          Temp       f_bondc0[2]    f_bondc1[2]  
+     20000   0              1866.0178      315.45117      0              0            
+     22000   0              1896.907       321.23175      0              0            
+Loop time of 4.75766 on 4 procs for 2000 steps with 1900 atoms
+
+Performance: 908.009 ns/day, 0.026 hours/ns, 420.375 timesteps/s, 798.712 katom-step/s
+91.2% CPU use with 4 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.011781   | 0.013606   | 0.014763   |   0.9 |  0.29
+Bond    | 0.00022664 | 0.00023933 | 0.00025015 |   0.0 |  0.01
+Neigh   | 0.013584   | 0.01364    | 0.01373    |   0.0 |  0.29
+Comm    | 0.070679   | 0.082996   | 0.090052   |   2.6 |  1.74
+Output  | 0.70592    | 1.6663     | 4.1454     | 111.5 | 35.02
+Modify  | 0.4206     | 2.9087     | 3.8741     |  84.7 | 61.14
+Other   |            | 0.07217    |            |       |  1.52
+
+Nlocal:            475 ave         494 max         458 min
+Histogram: 1 0 1 0 0 0 1 0 0 1
+Nghost:         376.25 ave         424 max         353 min
+Histogram: 1 2 0 0 0 0 0 0 0 1
+Neighs:          59.75 ave          72 max          44 min
+Histogram: 1 0 1 0 0 0 0 0 0 2
+
+Total # of neighbors = 239
+Ave neighs/atom = 0.12578947
+Ave special neighs/atom = 0
+Neighbor list builds = 62
+Dangerous builds = 0
+undump viz
+# ---------- end short visualization test ----------
+
+#fix rukja all halt 10000 v_netbond >= 700
+run   20000 #change parameter
+Generated 0 of 55 mixed pair_coeff terms from geometric mixing rule
+Per MPI rank memory allocation (min/avg/max) = 15.01 | 15.01 | 15.01 Mbytes
+   Step         E_bond         TotEng          Temp       f_bondc0[2]    f_bondc1[2]  
+     22000   0              1896.907       321.23175      0              0            
+     30000   0              1865.1642      315.49616      0              0            
+     40000   0              1884.5584      319.99935      0              0            
+     42000   0              1797.8282      303.68419      0              0            
+Loop time of 2.99203 on 4 procs for 20000 steps with 1900 atoms
+
+Performance: 14438.356 ns/day, 0.002 hours/ns, 6684.424 timesteps/s, 12.700 Matom-step/s
+99.5% CPU use with 4 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.082688   | 0.087991   | 0.093119   |   1.3 |  2.94
+Bond    | 0.0012336  | 0.0012496  | 0.0012664  |   0.0 |  0.04
+Neigh   | 0.099156   | 0.099606   | 0.10021    |   0.1 |  3.33
+Comm    | 0.23454    | 0.2404     | 0.24493    |   0.8 |  8.03
+Output  | 0.0034904  | 0.0049926  | 0.008906   |   3.2 |  0.17
+Modify  | 2.4905     | 2.4938     | 2.4951     |   0.1 | 83.35
+Other   |            | 0.06402    |            |       |  2.14
+
+Nlocal:            475 ave         494 max         462 min
+Histogram: 1 1 0 0 0 1 0 0 0 1
+Nghost:         374.75 ave         424 max         351 min
+Histogram: 1 2 0 0 0 0 0 0 0 1
+Neighs:           64.5 ave          81 max          50 min
+Histogram: 1 1 0 0 0 0 0 1 0 1
+
+Total # of neighbors = 258
+Ave neighs/atom = 0.13578947
+Ave special neighs/atom = 0
+Neighbor list builds = 614
+Dangerous builds = 0
+
+undump dyn
+undump dyn2
+undump bondinfo
+unfix fxrig
+unfix fxlan
+unfix fxlan1
+unfix fxnve
+clear
+
+
+Total wall time: 0:00:10

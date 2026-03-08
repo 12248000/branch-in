@@ -1,0 +1,238 @@
+#######################Init Section######################
+units           real
+boundary p p p
+atom_style      full
+bond_style      harmonic
+#angle_style     hybrid harmonic cosine 
+#read_data new_system.data extra/special/per/atom 10 
+read_data new_system.data extra/bond/per/atom 20 extra/special/per/atom 10
+#read_restart sim.2.restart
+
+pair_style hybrid/overlay lj/cut 30.0 morse 10.0
+
+#HS 5,6, patch 10,11, ligand 1,2,8,9, crowder 3,4, 7 (originally CoQ9 but treating as crowder)
+#HS size 10 #radius
+#side size 3.5
+#ligand size 1
+
+#HS-side patch - the patch is like an active site
+#for now just copying parameters from other lammps CoQ code
+pair_coeff 5 10 lj/cut 0.01 13.5 13.5
+pair_coeff 6 10 lj/cut 0.01 13.5 13.5
+pair_coeff 5 11 lj/cut 0.01 13.5 13.5
+pair_coeff 6 11 lj/cut 0.01 13.5 13.5
+
+#Crowder-Side Patch 
+pair_coeff 5 3 lj/cut 0.01 13.5 13.5 
+pair_coeff 5 4 lj/cut 0.01 13.5 13.5
+pair_coeff 6 3 lj/cut 0.01 13.5 13.5 
+pair_coeff 6 4 lj/cut 0.01 13.5 13.5
+
+# Crowder–patch interactions (same style as HS–patch)
+pair_coeff 3 10 lj/cut 0.01 13.5 13.5
+pair_coeff 3 11 lj/cut 0.01 13.5 13.5
+pair_coeff 4 10 lj/cut 0.01 13.5 13.5
+pair_coeff 4 11 lj/cut 0.01 13.5 13.5
+
+#HS-crowder
+pair_coeff 5 3 lj/cut 0.01 20 20 
+pair_coeff 5 4 lj/cut 0.01 20 20
+pair_coeff 6 3 lj/cut 0.01 20 20
+pair_coeff 6 4 lj/cut 0.01 20 20
+
+#Crowder-crowder
+pair_coeff 3 3 lj/cut 0.01 20 20 
+pair_coeff 3 4 lj/cut 0.01 20 20 
+pair_coeff 4 4 lj/cut 0.01 20 20 
+
+#Crowder-ligand 
+pair_coeff 1 3 lj/cut 0.2 11 25 
+pair_coeff 1 4 lj/cut 0.2 11 25
+pair_coeff 2 3 lj/cut 0.2 11 25 
+pair_coeff 2 4 lj/cut 0.2 11 25
+pair_coeff 8 3 lj/cut 0.2 11 25
+pair_coeff 8 4 lj/cut 0.2 11 25
+pair_coeff 9 3 lj/cut 0.2 11 25
+pair_coeff 9 4 lj/cut 0.2 11 25
+
+#Ligand-ligand
+pair_coeff 1 1 lj/cut 0.01 2 2
+pair_coeff 2 2 lj/cut 0.01 2 2
+pair_coeff 8 8 lj/cut 0.01 2 2
+pair_coeff 9 9 lj/cut 0.01 2 2
+pair_coeff 1 2 lj/cut 0.01 2 2
+pair_coeff 1 8 lj/cut 0.01 2 2
+pair_coeff 1 9 lj/cut 0.01 2 2
+pair_coeff 2 8 lj/cut 0.01 2 2
+pair_coeff 2 9 lj/cut 0.01 2 2
+pair_coeff 8 9 lj/cut 0.01 2 2
+
+#HS-HS unsure if this is relevant yet as I only have 1 enzyme that flickers
+#between on and off states, but I will include it for now
+pair_coeff 5 6 lj/cut 1.35 20 50 
+#put in some dummy parameters as done before
+
+#HS-HS and unmeasured set at 1KT 
+pair_coeff 5 5 lj/cut 0.6 20 50
+pair_coeff 6 6 lj/cut 0.6 20 50
+
+#patch-ligand cognate use 4KT 
+pair_coeff 10 1 morse 2.5 1.5 5.5 8.3 
+pair_coeff 11 2 morse 2.5 1.5 5.5 8.3
+
+#patch-ligand non-cognate use 2KT 0kT for final product and all patches
+pair_coeff 10 2 lj/cut 1.2 4.5 11.5
+pair_coeff 10 8 lj/cut 1.2 4.5 11.5
+pair_coeff 10 9 lj/cut 0.01 4.5 4.5
+pair_coeff 11 1 lj/cut 1.2 4.5 11.5
+pair_coeff 11 8 lj/cut 1.2 4.5 11.5
+pair_coeff 11 9 lj/cut 0.01 4.5 4.5
+
+#Patch-patch
+pair_coeff 10 10 lj/cut 0.01 7 7
+pair_coeff 11 11 lj/cut 0.01 7 7
+pair_coeff 10 11 lj/cut 0.01 7 7
+
+#HS-Ligand 0kT for final product and all enzymes
+pair_coeff 5 9 lj/cut 0.01 11 11
+pair_coeff 6 9 lj/cut 0.01 11 11
+pair_coeff 5 1 lj/cut 1.2 11 27.5
+pair_coeff 5 2 lj/cut 1.2 11 27.5
+pair_coeff 5 8 lj/cut 1.2 11 27.5
+pair_coeff 6 1 lj/cut 1.2 11 27.5
+pair_coeff 6 2 lj/cut 1.2 11 27.5
+pair_coeff 6 8 lj/cut 1.2 11 27.5
+
+#ignoring PPI as we're going between bound and unbound enzyme, and really just 1 enzyme to care about
+#CoQ-HS (starting from here) - skipping this section because i don't think i need it?
+# COQ9 (type 7) treated like a crowder
+
+# COQ9–COQ9 and COQ9–crowder
+pair_coeff 7 7 lj/cut 0.01 20 20
+pair_coeff 3 7 lj/cut 0.01 20 20
+pair_coeff 4 7 lj/cut 0.01 20 20
+
+# HS–COQ9 (copy HS–crowder)
+pair_coeff 5 7 lj/cut 0.01 20 20
+pair_coeff 6 7 lj/cut 0.01 20 20
+
+# Ligand–COQ9 (copy crowder–ligand)
+pair_coeff 1 7 lj/cut 0.2 11 25
+pair_coeff 2 7 lj/cut 0.2 11 25
+pair_coeff 8 7 lj/cut 0.2 11 25
+pair_coeff 9 7 lj/cut 0.2 11 25
+
+# Patch–COQ9 (copy patch–crowder)
+pair_coeff 7 10 lj/cut 0.01 13.5 13.5
+pair_coeff 7 11 lj/cut 0.01 13.5 13.5
+
+#patch-ligand k_off
+bond_coeff * 0.6 5.3
+special_bonds lj 0 0.2 0.5 angle no
+compute 1 all temp
+thermo          10000
+#Output thermodynamic information every 10,000 steps.
+
+group enz type 5 6 10 11 #apparently should include patch in enz group
+group crwd type 3 4
+group reactgrp type 10 11 1 2 8 9
+group lig type 1 2 8 9 
+group crwdlig type 1 2 8 9 3 4
+
+#random seed
+variable a equal 233
+
+# rigid body constraint
+fix fxrig enz rigid/nve molecule langevin 310 310 2000 $a
+fix fxlan crwd langevin 310.0 310.0 2000 $a
+fix fxlan1 lig langevin 310.0 310.0 80 $a
+fix fxnve crwdlig nve 
+timestep 25
+
+dump equi all dcd 500 preequi.$a.dcd
+dump_modify equi unwrap yes
+
+#short equilibrium run
+run   20000 #we'll see if this is too short, can try 1000 and 100,000
+
+undump equi
+unfix fxrig
+unfix fxlan
+unfix fxlan1
+unfix fxnve
+
+############################Langevin Dynamics###############################
+
+fix fxrig enz rigid/nve molecule langevin 310 310 2000 $a
+fix fxlan crwd langevin 310.0 310.0 2000 $a
+fix fxlan1 lig langevin 310.0 310.0 80 $a
+fix fxnve crwdlig nve 
+timestep 25
+
+#bond/create/random written by Pierre de Buyl https://github.com/pdebuyl/lammps/tree/fbc_random/src/MC 
+#fix ID group bond/create/random Nevery itype jtype rcut new_bond_type \prob P seed iparam 1 iatomtype jparam 1 jatomtype
+#it is non-trivial to do Pierre de Buyl because his is old and lammps you need for react is new 
+
+#5+1 -> 6-8 
+#fix bondc0  reactgrp bond/create/random 10 10 1 5.5 1 prob 0.00001 $a iparam 1 11 jparam 1 8
+fix bondc0 reactgrp bond/create 10 11 1 5.5 1 iparam 1 11 jparam 1 8
+#6-8 + 2 --> 3-5-9 (8->9, 2->3, 6->5 aka patch 11->10)
+molecule preTriad preTriad.txt
+molecule postTriad postTriad.txt
+#the reversible enzyme-substrate complex
+molecule preComp1 preComp1.txt
+molecule postComp1 postComp1.txt
+#code that disassociates first enzyme-substrate complex (folP-DHPP 6-8 -> 5+1) 
+fix bondc1 reactgrp bond/react &
+    react comp1_rxn reactgrp 10 0.0 5.5 preComp1 postComp1 comp1.map &
+    react triad_rxn reactgrp 10 0.0 5.5 preTriad postTriad triad.map  # turns 2+6-8 -> 3+5+9
+# tell bond/react how long to keep highlight spheres (in timesteps)
+
+#fix_modify bondc1 fcolor yellow ftrans 0.5
+
+#dump file for channeling analysis 
+compute flux reactgrp property/local btype batom1 batom2
+dump bondinfo reactgrp local 100 bond_data.txt c_flux[1] c_flux[2] c_flux[3]
+
+# unsure if adding break code here
+
+#dump file for product yield
+variable tstep equal step
+thermo_style custom step ebond etotal temp f_bondc0[2] f_bondc1[2] 
+timestep 25
+
+restart 100000 sim1.1.restart sim1.2.restart #change parameter 
+
+#dump file for trajectory
+dump dyn all dcd 20000 equi1.$a.dcd
+dump_modify dyn unwrap yes
+
+#another dump file for channeling analysis 
+dump dyn2 all custom 20000 atomtype.$a.dump id type x y z
+
+# ---------- short visualization test run ----------
+
+variable ndump index 10
+
+# minimal, known‑good syntax: no extra keywords
+dump viz all image ${ndump} movie.*.png type type size 600 600 &
+     center s 0.5 0.5 0.5 view 70 -10 zoom 4.0
+dump_modify viz backcolor white pad 4
+
+run 2000
+undump viz
+# ---------- end short visualization test ----------
+
+#fix rukja all halt 10000 v_netbond >= 700
+run   20000 #change parameter
+
+undump dyn
+undump dyn2
+undump bondinfo
+unfix fxrig
+unfix fxlan
+unfix fxlan1
+unfix fxnve
+clear
+
+

@@ -1,0 +1,23 @@
+preTriad
+
+3 atoms
+1 bonds
+0 angles
+0 dihedrals
+0 impropers
+
+Coords
+
+1  0.0  0.0  0.0
+2  1.0  0.0  0.0
+3  0.0  1.0  0.0
+
+Types
+
+1  2
+2  6
+3  8
+
+Bonds
+
+1  1  2  3

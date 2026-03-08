@@ -1,0 +1,19 @@
+# triad.map: ES dissociation 6-8 +2 -> 5+9+3
+
+3 equivalences
+0 edgeIDs
+0 deleteIDs
+0 createIDs
+0 chiralIDs
+0 constraints
+
+InitiatorIDs
+
+2
+3
+
+Equivalences
+
+1 1
+2 2
+3 3
