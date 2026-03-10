@@ -204,24 +204,32 @@ timestep 25
 
 restart 100000 sim1.1.restart sim1.2.restart #change parameter 
 
+# equilibration trajectory (for checking)
+dump equi all dcd 500 preequi.$a.dcd
+dump_modify equi unwrap yes
+
 #dump file for trajectory
-dump dyn all dcd 20000 equi1.$a.dcd
+dump dyn all dcd 1000 equi1.$a.dcd
 dump_modify dyn unwrap yes
 
+# OPTIONAL: text trajectory for OVITO
+dump ovito all custom 1000 traj.$a.dump id type mol x y z ix iy iz
+dump_modify ovito sort id
+
 #another dump file for channeling analysis 
-dump dyn2 all custom 20000 atomtype.$a.dump id type x y z
+dump dyn2 all custom 1000 atomtype.$a.dump id type x y z
 
 # ---------- short visualization test run ----------
 
-variable ndump index 10
+#variable ndump index 10
 
 # minimal, known‑good syntax: no extra keywords
-dump viz all image ${ndump} movie.*.png type type size 600 600 &
-     center s 0.5 0.5 0.5 view 70 -10 zoom 4.0
-dump_modify viz backcolor white pad 4
+#dump viz all image ${ndump} movie.*.png type type size 600 600 &
+     #center s 0.5 0.5 0.5 view 70 -10 zoom 4.0
+#dump_modify viz backcolor white pad 4
 
-run 2000
-undump viz
+##run 2000
+#undump viz
 # ---------- end short visualization test ----------
 
 #fix rukja all halt 10000 v_netbond >= 700
@@ -234,6 +242,7 @@ unfix fxrig
 unfix fxlan
 unfix fxlan1
 unfix fxnve
+undump ovito 
 clear
 
 

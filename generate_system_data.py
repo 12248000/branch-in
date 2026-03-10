@@ -169,10 +169,23 @@ if __name__ == "__main__":
     totalAtoms = totalEnzymeMolecules * 2 + totalLigandMolecules + num_crowd + num_coq9
         
     print(f"Total number of Molecules: {totalMolecules}, Total number of Atoms: {totalAtoms}\nDistribution of enzymes: {enzArr}, Number of enzyme types: {enzType}, Mass of enzyme: {enzMass}, Mass of active site: {activeSiteMass}\nNumber of starting ligand: {num_lig}, Mass of ligands: {ligMass}, Number of ligand types in pathway: {ligType}\nNumber of crowder: {num_crowd}, Mass of crowder: {crowdMass}\nNumber of COQ9: {num_coq9}, Mass of COQ9: {coq9Mass} Radius of enzyme: {rad_enz},  Box length: {box_len}")
+    # --- choose how many ligands of each type you want at t = 0 ---
+    user_input_lig1 = input("How many ligands of type 1 at t=0? ")
+    match = re.match(r'(^\d+$)', user_input_lig1)
+    if match:
+        n1 = int(match.group(1))
+    else:
+        print("The input string does not match the expected pattern.")
+        sys.exit(1)
 
+    n2 = num_lig - n1
+    if n2 < 0:
+        print("Error: number of type‑1 ligands exceeds total ligands.")
+        sys.exit(1)
+    # --------------------------------------------------------------
     enzIndex        = [5, 6]      # HS enzyme types
     activeSiteIndex = [10, 11]    # patch / active-site types
-    ligIndex        = [1]         # starting ligand type (you can extend later)
+    ligIndex        = [1,2]         # starting ligand type (you can extend later)
     crowderIndex    = [3]         # crowder type
     coq9Index       = [7]         # COQ9 type
 
@@ -206,7 +219,7 @@ if __name__ == "__main__":
         print(f"0 {box_len} xlo xhi")
         print(f"0 {box_len} ylo yhi")
         print(f"0 {box_len} zlo zhi")
-        
+
         print()
         print("Masses")
         print()
@@ -230,12 +243,15 @@ if __name__ == "__main__":
         
         atomCounter = 1
         moleculeCounter = 1
+        lig_types_list = [1]*n1 + [2]*n2
+        random.shuffle(lig_types_list)
         while (moleculeCounter <= totalMolecules):
+
             if moleculeCounter <= totalEnzymeMolecules:
                 for i in range(enzType):
                     curr_enzyme = enzIndex[i]
                     curr_activeSite = activeSiteIndex[i]
-                    
+
                     curr_enzyme_molecule_num = enzArr[i]
                     for j in range(curr_enzyme_molecule_num):
                         while True:
@@ -249,7 +265,7 @@ if __name__ == "__main__":
                                 enz_crowd_coordinates.append(coord1)
                                 active_site_coordinates.append(coord2)
                                 break
-            
+
             elif moleculeCounter <= totalEnzymeMolecules + num_coq9:
                 for j in range(num_coq9):
                     while True:
@@ -261,7 +277,7 @@ if __name__ == "__main__":
                             moleculeCounter += 1
                             enz_crowd_coordinates.append(coord)
                             break
-                    
+
             elif moleculeCounter <= totalEnzymeMolecules + num_crowd + num_coq9:
                 for j in range(num_crowd):
                     while True:
@@ -273,17 +289,29 @@ if __name__ == "__main__":
                             moleculeCounter += 1
                             enz_crowd_coordinates.append(coord)
                             break
-                    
-            else: 
-                for i in range(num_lig):
+
+            else:
+                # ligand molecules: use ligand type list we built once
+                for curr_lig in lig_types_list:
                     while True:
-                        curr_lig = ligIndex[0]
                         coord = generate_random_coordinate(box_len)
-                        if is_valid_point(coord, enz_crowd_coordinates, cutoff_enz_lig) and is_valid_point(coord, lig_coordinates, cutoff_lig_lig):
+                        if (is_valid_point(coord, enz_crowd_coordinates, cutoff_enz_lig) and
+                            is_valid_point(coord, lig_coordinates, cutoff_lig_lig)):
                             print(f"{atomCounter} {moleculeCounter} {curr_lig} 0 {coord[0]} {coord[1]} {coord[2]}")
                             atomCounter += 1
                             moleculeCounter += 1
                             lig_coordinates.append(coord)
                             break
+            #else: 
+                #for i in range(num_lig):
+                    #while True:
+                        #curr_lig = ligIndex[1,2]
+                        #coord = generate_random_coordinate(box_len)
+                        #if is_valid_point(coord, enz_crowd_coordinates, cutoff_enz_lig) and is_valid_point(coord, lig_coordinates, cutoff_lig_lig):
+                            #print(f"{atomCounter} {moleculeCounter} {curr_lig} 0 {coord[0]} {coord[1]} {coord[2]}")
+                            #atomCounter += 1
+                            #moleculeCounter += 1
+                            #lig_coordinates.append(coord)
+                            #break
                         
         sys.stdout = original_stdout

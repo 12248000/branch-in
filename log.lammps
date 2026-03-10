@@ -19,8 +19,8 @@ Finding 1-2 1-3 1-4 neighbors ...
      0 = max # of 1-3 neighbors
      0 = max # of 1-4 neighbors
     11 = max # of special neighbors
-  special bonds CPU = 0.001 seconds
-  read_data CPU = 0.012 seconds
+  special bonds CPU = 0.003 seconds
+  read_data CPU = 0.052 seconds
 #read_restart sim.2.restart
 
 pair_style hybrid/overlay lj/cut 30.0 morse 10.0
@@ -212,36 +212,36 @@ Neighbor list info ...
       bin: standard
 Per MPI rank memory allocation (min/avg/max) = 11.75 | 11.75 | 11.75 Mbytes
    Step          Temp          E_pair         E_mol          TotEng         Press     
-         0   0              116.98524      0              116.98524      0.0052968352 
-     10000   310.53126      112.86395      0              1839.7898      14.034828    
-     20000   315.45117      111.73145      0              1866.0178     -4.8251209    
-Loop time of 2.61499 on 4 procs for 20000 steps with 1900 atoms
+         0   0              132.9335       0              132.9335       0.68286233   
+     10000   314.67912      116.05198      0              1866.0449      9.5781041    
+     20000   307.2992       114.91288      0              1823.8646     -17.381789    
+Loop time of 6.08437 on 4 procs for 20000 steps with 1900 atoms
 
-Performance: 16520.145 ns/day, 0.001 hours/ns, 7648.215 timesteps/s, 14.532 Matom-step/s
-97.2% CPU use with 4 MPI tasks x no OpenMP threads
+Performance: 7100.155 ns/day, 0.003 hours/ns, 3287.109 timesteps/s, 6.246 Matom-step/s
+72.3% CPU use with 4 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.086486   | 0.091805   | 0.095602   |   1.2 |  3.51
-Bond    | 0.0014155  | 0.001461   | 0.0015671  |   0.2 |  0.06
-Neigh   | 0.10857    | 0.10901    | 0.10954    |   0.1 |  4.17
-Comm    | 0.33517    | 0.33888    | 0.34254    |   0.5 | 12.96
-Output  | 0.0032492  | 0.0039377  | 0.0054913  |   1.4 |  0.15
-Modify  | 1.8871     | 1.8916     | 1.8984     |   0.3 | 72.34
-Other   |            | 0.1783     |            |       |  6.82
+Pair    | 0.11047    | 0.11939    | 0.13496    |   2.7 |  1.96
+Bond    | 0.0025681  | 0.0028434  | 0.0032191  |   0.4 |  0.05
+Neigh   | 0.19211    | 0.20163    | 0.2142     |   2.1 |  3.31
+Comm    | 1.3526     | 1.3989     | 1.4467     |   3.2 | 22.99
+Output  | 0.0049354  | 0.0066328  | 0.010909   |   3.0 |  0.11
+Modify  | 3.2046     | 3.2478     | 3.2845     |   1.6 | 53.38
+Other   |            | 1.107      |            |       | 18.20
 
-Nlocal:            475 ave         493 max         459 min
-Histogram: 1 0 1 0 0 0 1 0 0 1
-Nghost:          371.5 ave         418 max         353 min
-Histogram: 3 0 0 0 0 0 0 0 0 1
+Nlocal:            475 ave         499 max         461 min
+Histogram: 1 1 1 0 0 0 0 0 0 1
+Nghost:          404.5 ave         419 max         382 min
+Histogram: 1 0 0 0 0 0 1 1 0 1
 Neighs:              0 ave           0 max           0 min
 Histogram: 4 0 0 0 0 0 0 0 0 0
 
 Total # of neighbors = 0
 Ave neighs/atom = 0
 Ave special neighs/atom = 0
-Neighbor list builds = 613
+Neighbor list builds = 610
 Dangerous builds = 0
 
 undump equi
@@ -336,25 +336,39 @@ timestep 25
 
 restart 100000 sim1.1.restart sim1.2.restart #change parameter
 
+# equilibration trajectory (for checking)
+dump equi all dcd 500 preequi.$a.dcd
+dump equi all dcd 500 preequi.233.dcd
+dump_modify equi unwrap yes
+
 #dump file for trajectory
-dump dyn all dcd 20000 equi1.$a.dcd
-dump dyn all dcd 20000 equi1.233.dcd
+dump dyn all dcd 1000 equi1.$a.dcd
+dump dyn all dcd 1000 equi1.233.dcd
 dump_modify dyn unwrap yes
 
+# OPTIONAL: text trajectory for OVITO
+dump ovito all custom 1000 traj.$a.dump id type mol x y z ix iy iz
+dump ovito all custom 1000 traj.233.dump id type mol x y z ix iy iz
+dump_modify ovito sort id
+
 #another dump file for channeling analysis
-dump dyn2 all custom 20000 atomtype.$a.dump id type x y z
-dump dyn2 all custom 20000 atomtype.233.dump id type x y z
+dump dyn2 all custom 1000 atomtype.$a.dump id type x y z
+dump dyn2 all custom 1000 atomtype.233.dump id type x y z
 
 # ---------- short visualization test run ----------
 
-variable ndump index 10
+#variable ndump index 10
 
 # minimal, known‑good syntax: no extra keywords
-dump viz all image ${ndump} movie.*.png type type size 600 600      center s 0.5 0.5 0.5 view 70 -10 zoom 4.0
-dump viz all image 10 movie.*.png type type size 600 600      center s 0.5 0.5 0.5 view 70 -10 zoom 4.0
-dump_modify viz backcolor white pad 4
+#dump viz all image ${ndump} movie.*.png type type size 600 600      #center s 0.5 0.5 0.5 view 70 -10 zoom 4.0
+#dump_modify viz backcolor white pad 4
 
-run 2000
+##run 2000
+#undump viz
+# ---------- end short visualization test ----------
+
+#fix rukja all halt 10000 v_netbond >= 700
+run   20000 #change parameter
 
 CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
 
@@ -420,77 +434,38 @@ Neighbor list info ...
       pair build: half/bin/newton
       stencil: half/bin/3d
       bin: standard
-Per MPI rank memory allocation (min/avg/max) = 12.07 | 12.07 | 12.08 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 12.13 | 12.13 | 12.13 Mbytes
    Step         E_bond         TotEng          Temp       f_bondc1[2]  
-     20000   0              1866.0178      315.45117      0            
-     22000   0              1896.907       321.23175      0            
-Loop time of 5.09436 on 4 procs for 2000 steps with 1900 atoms
+     20000   0              1823.8646      307.2992       0            
+     30000   0              1861.4965      315.41359      0            
+     40000   0              1856.8285      314.92277      0            
+Loop time of 14.3345 on 4 procs for 20000 steps with 1900 atoms
 
-Performance: 847.996 ns/day, 0.028 hours/ns, 392.591 timesteps/s, 745.922 katom-step/s
-87.6% CPU use with 4 MPI tasks x no OpenMP threads
+Performance: 3013.715 ns/day, 0.008 hours/ns, 1395.238 timesteps/s, 2.651 Matom-step/s
+48.5% CPU use with 4 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.01298    | 0.015421   | 0.020628   |   2.5 |  0.30
-Bond    | 0.00026443 | 0.00028249 | 0.00029319 |   0.0 |  0.01
-Neigh   | 0.012966   | 0.013124   | 0.013275   |   0.1 |  0.26
-Comm    | 0.11651    | 0.12482    | 0.13024    |   1.6 |  2.45
-Output  | 0.75082    | 1.7445     | 4.2846     | 111.8 | 34.24
-Modify  | 0.55817    | 3.1149     | 4.126      |  84.3 | 61.14
-Other   |            | 0.08127    |            |       |  1.60
+Pair    | 0.12798    | 0.13542    | 0.15256    |   2.7 |  0.94
+Bond    | 0.0028223  | 0.003878   | 0.0047248  |   1.3 |  0.03
+Neigh   | 0.20739    | 0.23426    | 0.25709    |   4.5 |  1.63
+Comm    | 2.0937     | 2.5062     | 2.7428     |  16.2 | 17.48
+Output  | 0.15862    | 0.1783     | 0.19247    |   2.9 |  1.24
+Modify  | 10.436     | 10.463     | 10.489     |   0.6 | 72.99
+Other   |            | 0.8139     |            |       |  5.68
 
-Nlocal:            475 ave         494 max         458 min
-Histogram: 1 0 1 0 0 0 1 0 0 1
-Nghost:         376.25 ave         424 max         353 min
-Histogram: 1 2 0 0 0 0 0 0 0 1
-Neighs:          59.75 ave          72 max          44 min
-Histogram: 1 0 1 0 0 0 0 0 0 2
+Nlocal:            475 ave         495 max         462 min
+Histogram: 2 0 0 0 0 1 0 0 0 1
+Nghost:         396.75 ave         404 max         379 min
+Histogram: 1 0 0 0 0 0 0 0 1 2
+Neighs:             64 ave          78 max          58 min
+Histogram: 2 1 0 0 0 0 0 0 0 1
 
-Total # of neighbors = 239
-Ave neighs/atom = 0.12578947
+Total # of neighbors = 256
+Ave neighs/atom = 0.13473684
 Ave special neighs/atom = 0
-Neighbor list builds = 62
-Dangerous builds = 0
-undump viz
-# ---------- end short visualization test ----------
-
-#fix rukja all halt 10000 v_netbond >= 700
-run   20000 #change parameter
-Generated 0 of 55 mixed pair_coeff terms from geometric mixing rule
-Per MPI rank memory allocation (min/avg/max) = 14.32 | 14.32 | 14.32 Mbytes
-   Step         E_bond         TotEng          Temp       f_bondc1[2]  
-     22000   0              1896.907       321.23175      0            
-     30000   0              1865.1642      315.49616      0            
-     40000   0              1884.5584      319.99935      0            
-     42000   0              1797.8282      303.68419      0            
-Loop time of 3.91401 on 4 procs for 20000 steps with 1900 atoms
-
-Performance: 11037.278 ns/day, 0.002 hours/ns, 5109.851 timesteps/s, 9.709 Matom-step/s
-94.0% CPU use with 4 MPI tasks x no OpenMP threads
-
-MPI task timing breakdown:
-Section |  min time  |  avg time  |  max time  |%varavg| %total
----------------------------------------------------------------
-Pair    | 0.092519   | 0.097708   | 0.10291    |   1.3 |  2.50
-Bond    | 0.0015777  | 0.001639   | 0.0017539  |   0.2 |  0.04
-Neigh   | 0.11384    | 0.1163     | 0.11896    |   0.6 |  2.97
-Comm    | 0.36871    | 0.37744    | 0.38328    |   0.9 |  9.64
-Output  | 0.0053726  | 0.0067685  | 0.010044   |   2.3 |  0.17
-Modify  | 3.1918     | 3.1955     | 3.1979     |   0.1 | 81.64
-Other   |            | 0.1187     |            |       |  3.03
-
-Nlocal:            475 ave         494 max         462 min
-Histogram: 1 1 0 0 0 1 0 0 0 1
-Nghost:         374.75 ave         424 max         351 min
-Histogram: 1 2 0 0 0 0 0 0 0 1
-Neighs:           64.5 ave          81 max          50 min
-Histogram: 1 1 0 0 0 0 0 1 0 1
-
-Total # of neighbors = 258
-Ave neighs/atom = 0.13578947
-Ave special neighs/atom = 0
-Neighbor list builds = 614
+Neighbor list builds = 611
 Dangerous builds = 0
 
 undump dyn
@@ -500,7 +475,8 @@ unfix fxrig
 unfix fxlan
 unfix fxlan1
 unfix fxnve
+undump ovito
 clear
 
 
-Total wall time: 0:00:11
+Total wall time: 0:00:20
